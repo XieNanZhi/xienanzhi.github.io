@@ -81,11 +81,74 @@
   .btn.primary { background: linear-gradient(180deg, #63cdf5 0%, #2f9fd8 100%); color: #fff; border-color: #2f9fd8; }
   .btn.primary:hover { background: linear-gradient(180deg, #74d4f8 0%, #37a8e2 100%); }
 
-  .cards {
-    width: min(720px, 100%);
-    margin-top: 26px;
+  .settings {
+    width: min(360px, 100%);
+    margin-top: 14px;
+    background: #fffdf6;
+    border: 2px solid #cdeaf8;
+    border-radius: 16px;
+    padding: 14px 16px 16px;
+    box-shadow: 0 10px 24px rgba(52, 130, 180, .10);
+  }
+  .settings h2 { margin: 0 0 4px; font-size: 16px; color: #1f6f9c; }
+  .settings .tip { margin: 0 0 12px; font-size: 12px; color: #8fb4c9; }
+  .setting-row { margin-bottom: 12px; }
+  .setting-row:last-child { margin-bottom: 0; }
+  .setting-row .label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13.5px;
+    color: #2f5d7c;
+    margin-bottom: 5px;
+  }
+  .setting-row .val { color: #2f9fd8; font-weight: 700; font-size: 13px; }
+  input[type="range"] { width: 100%; accent-color: #2f9fd8; cursor: pointer; margin: 0; }
+  .bg-options { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bg-chip {
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #cdeaf8;
+    background: #eaf8ff;
+    color: #1f6f9c;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, transform .12s ease;
+  }
+  .bg-chip:hover { background: #d9f1ff; }
+  .bg-chip.active {
+    background: linear-gradient(180deg, #63cdf5 0%, #2f9fd8 100%);
+    color: #fff;
+    border-color: #2f9fd8;
+  }
+
+  .layout {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: minmax(230px, 300px) 360px minmax(230px, 300px);
+    gap: 22px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .side { min-width: 0; }
+  .side .settings { width: 100%; }
+
+  @media (max-width: 920px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 420px;
+    }
+    .layout .stage { order: 1; }
+    .layout .options { order: 2; }
+    .layout .guide { order: 3; }
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
     gap: 14px;
   }
   .card {
@@ -119,32 +182,55 @@
   <p class="sub">Flappy Bird </p>
 </header>
 
-<div class="stage">
-  <canvas id="game" width="360" height="640" aria-label="小鸟快飞游戏画面"></canvas>
-  <div class="toolbar">
-    <button class="btn primary" id="btnStart">开始游戏</button>
-    <button class="btn" id="btnSound">音效：开</button>
-  </div>
-</div>
+<div class="layout">
+  <aside class="side guide">
+    <div class="cards">
+      <div class="card">
+        <h2>怎么玩</h2>
+        <p>点击画面（或按 <span class="key">空格</span> / <span class="key">↑</span>）让小鸟向上飞。</p>
+        <p>松开就会自然下落，<b>穿过上下管道的空隙</b> 得 1 分。</p>
+        <p>撞到管道或掉到地面即结束，<span class="key">R</span> 键重开。</p>
+      </div>
+      <div class="card">
+        <h2>小技巧</h2>
+        <p>不要狂点，一下一下地点，让小鸟保持平稳的滑翔节奏。</p>
+        <p>眼睛盯着下一根管道的空隙中心，而不是盯着小鸟。</p>
+        <p>下落时提前轻点，比撞到了再补点更容易救回来。</p>
+      </div>
+      <div class="card">
+        <h2>关于</h2>
+        <p>纯 HTML + CSS + JavaScript 手写，无任何依赖，手机电脑都能玩。</p>
+        <p>最高分会自动保存在本机浏览器里。</p>
+      </div>
+    </div>
+  </aside>
 
-<div class="cards">
-  <div class="card">
-    <h2>怎么玩</h2>
-    <p>点击画面（或按 <span class="key">空格</span> / <span class="key">↑</span>）让小鸟向上飞。</p>
-    <p>松开就会自然下落，<b>穿过上下管道的空隙</b> 得 1 分。</p>
-    <p>撞到管道或掉到地面即结束，<span class="key">R</span> 键重开。</p>
+  <div class="stage">
+    <canvas id="game" width="360" height="640" aria-label="小鸟快飞游戏画面"></canvas>
+    <div class="toolbar">
+      <button class="btn primary" id="btnStart">开始游戏</button>
+      <button class="btn" id="btnSound">音效：开</button>
+    </div>
   </div>
-  <div class="card">
-    <h2>小技巧</h2>
-    <p>不要狂点，一下一下地点，让小鸟保持平稳的滑翔节奏。</p>
-    <p>眼睛盯着下一根管道的空隙中心，而不是盯着小鸟。</p>
-    <p>下落时提前轻点，比撞到了再补点更容易救回来。</p>
-  </div>
-  <div class="card">
-    <h2>关于</h2>
-    <p>纯 HTML + CSS + JavaScript 手写，无任何依赖，手机电脑都能玩。</p>
-    <p>最高分会自动保存在本机浏览器里。</p>
-  </div>
+
+  <aside class="side options">
+    <div class="settings">
+      <h2>游戏设置</h2>
+      <p class="tip">调整后立即生效，重新开局也会沿用当前设置。</p>
+      <div class="setting-row">
+        <div class="label"><span>柱子左右距离（间距）</span><span class="val" id="spacingVal">220</span></div>
+        <input type="range" id="spacingRange" min="160" max="320" step="10" value="220">
+      </div>
+      <div class="setting-row">
+        <div class="label"><span>柱子上下距离（空隙）</span><span class="val" id="gapVal">160</span></div>
+        <input type="range" id="gapRange" min="120" max="280" step="10" value="160">
+      </div>
+      <div class="setting-row">
+        <div class="label"><span>背景选择</span></div>
+        <div class="bg-options" id="bgOptions"></div>
+      </div>
+    </div>
+  </aside>
 </div>
 
 <footer>奶油 · 天蓝 · 海蓝 &nbsp;|&nbsp; 用 GitHub Pages 免费托管</footer>
@@ -166,7 +252,6 @@
   var GRAVITY = 1500;                // px/s^2
   var JUMP_VEL = -430;               // px/s
   var PIPE_W = 62;
-  var PIPE_SPACING = 220;            // 管道水平间距
   var BASE_SPEED = 168;              // px/s
 
   // 高清屏适配
@@ -185,6 +270,77 @@
   var bird, pipes, score, best, speed, groundX, clouds, tick, flash, lastTs, raf;
   var soundOn = true;
   best = parseInt(localStorage.getItem('flappy-best') || '0', 10) || 0;
+
+  // ---------- 玩家自定义设置（自动记忆上次选择） ----------
+  var settings = (function () {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('flappy-settings') || 'null'); } catch (e) { saved = null; }
+    return {
+      spacing: (saved && saved.spacing >= 160 && saved.spacing <= 320) ? saved.spacing : 220,
+      gap: (saved && saved.gap >= 120 && saved.gap <= 280) ? saved.gap : 160,
+      bg: (saved && typeof saved.bg === 'number') ? saved.bg : 0
+    };
+  })();
+
+  function saveSettings() {
+    try { localStorage.setItem('flappy-settings', JSON.stringify(settings)); } catch (e) { /* 忽略存储错误 */ }
+  }
+
+  // ---------- 背景预设（玩家只负责选择） ----------
+  var backgrounds = [
+    {
+      name: '奶油海风',
+      sky: ['#f2fcff', '#c6ecff', '#e8f8ff'],
+      celestial: { type: 'sun', x: 300, y: 76, core: '#fff6d6', glow1: 'rgba(255,247,214,.95)', glow2: 'rgba(255,240,190,.45)', glow3: 'rgba(255,240,190,0)', coreR: 24, glowR: 66 },
+      stars: false,
+      cloud: 'rgba(255,255,255,.92)',
+      hills: ['rgba(126, 200, 226, .55)', 'rgba(86, 176, 214, .40)'],
+      groundWave: '#8fd8f2', foam: 'rgba(255,255,255,.6)',
+      groundTop: '#fff6e0', groundBottom: '#f3e2bf', groundLine: '#e7d3a8', groundStripe: 'rgba(233, 214, 172, .9)'
+    },
+    {
+      name: '黄昏晚霞',
+      sky: ['#ffe9c9', '#ffc6a3', '#f7b9c3'],
+      celestial: { type: 'sun', x: 300, y: 86, core: '#fff3c4', glow1: 'rgba(255,203,120,.92)', glow2: 'rgba(255,168,120,.42)', glow3: 'rgba(255,168,120,0)', coreR: 26, glowR: 80 },
+      stars: false,
+      cloud: 'rgba(255,255,255,.85)',
+      hills: ['rgba(214, 128, 108, .52)', 'rgba(180, 98, 122, .42)'],
+      groundWave: '#f0a27e', foam: 'rgba(255,255,255,.5)',
+      groundTop: '#ffe8cf', groundBottom: '#f2c79e', groundLine: '#e0b48a', groundStripe: 'rgba(226, 170, 120, .9)'
+    },
+    {
+      name: '静谧星夜',
+      sky: ['#0b1f3f', '#123057', '#0a1730'],
+      celestial: { type: 'moon', x: 300, y: 78, core: '#fff8d9', glow1: 'rgba(255,248,217,.9)', glow2: 'rgba(255,240,180,.35)', glow3: 'rgba(255,240,180,0)', coreR: 22, glowR: 70 },
+      stars: true,
+      cloud: 'rgba(210, 225, 245, .25)',
+      hills: ['rgba(30, 70, 110, .62)', 'rgba(22, 55, 95, .55)'],
+      groundWave: '#2b5f85', foam: 'rgba(180,210,230,.35)',
+      groundTop: '#1c3a55', groundBottom: '#122536', groundLine: '#2f5f82', groundStripe: 'rgba(60, 110, 150, .9)'
+    },
+    {
+      name: '薄荷森林',
+      sky: ['#e9f9ee', '#cdf0de', '#e3f6ec'],
+      celestial: { type: 'sun', x: 300, y: 80, core: '#fffbe0', glow1: 'rgba(255,251,224,.9)', glow2: 'rgba(255,246,190,.4)', glow3: 'rgba(255,246,190,0)', coreR: 24, glowR: 66 },
+      stars: false,
+      cloud: 'rgba(255,255,255,.9)',
+      hills: ['rgba(96, 190, 150, .5)', 'rgba(64, 168, 130, .42)'],
+      groundWave: '#6fc9a0', foam: 'rgba(255,255,255,.55)',
+      groundTop: '#eaf7d8', groundBottom: '#cfe8b8', groundLine: '#b9d99f', groundStripe: 'rgba(150, 200, 130, .9)'
+    },
+    {
+      name: '蜜桃甜心',
+      sky: ['#fff0f4', '#ffd9e4', '#ffe9ee'],
+      celestial: { type: 'sun', x: 300, y: 80, core: '#fff2e0', glow1: 'rgba(255,200,200,.9)', glow2: 'rgba(255,178,192,.4)', glow3: 'rgba(255,178,192,0)', coreR: 24, glowR: 66 },
+      stars: false,
+      cloud: 'rgba(255,255,255,.9)',
+      hills: ['rgba(240, 150, 170, .5)', 'rgba(220, 120, 150, .4)'],
+      groundWave: '#f0a8c0', foam: 'rgba(255,255,255,.55)',
+      groundTop: '#fff0e6', groundBottom: '#f7d8cf', groundLine: '#ecc4bc', groundStripe: 'rgba(240, 190, 180, .9)'
+    }
+  ];
+
+  function currentBg() { return backgrounds[settings.bg]; }
 
   function makeClouds() {
     clouds = [];
@@ -209,11 +365,11 @@
     makeClouds();
     // 预置三根管道
     pipes.push(makePipe(W + 60));
-    pipes.push(makePipe(W + 60 + PIPE_SPACING));
-    pipes.push(makePipe(W + 60 + PIPE_SPACING * 2));
+    pipes.push(makePipe(W + 60 + settings.spacing));
+    pipes.push(makePipe(W + 60 + settings.spacing * 2));
   }
 
-  function gapSize() { return Math.max(126, 158 - score * 1.4); }
+  function gapSize() { return Math.max(110, settings.gap - score * 1.4); }
 
   function makePipe(x) {
     var gap = gapSize();
@@ -267,6 +423,65 @@
     soundOn = !soundOn;
     btnSound.textContent = '音效：' + (soundOn ? '开' : '关');
   });
+
+  // ---------- 设置面板 ----------
+  var spacingRange = document.getElementById('spacingRange');
+  var gapRange = document.getElementById('gapRange');
+  var spacingVal = document.getElementById('spacingVal');
+  var gapVal = document.getElementById('gapVal');
+  var bgOptions = document.getElementById('bgOptions');
+
+  // 按当前左右距离重新铺一批管道（保证间距修改立即生效）
+  function rebuildPipes() {
+    pipes = [];
+    for (var i = 0; i < 3; i++) {
+      pipes.push(makePipe(W + 60 + i * settings.spacing));
+    }
+  }
+
+  // 若上次保存的背景索引越界则回退到默认
+  if (settings.bg < 0 || settings.bg >= backgrounds.length) settings.bg = 0;
+
+  // 把已记忆的设置同步到控件显示
+  spacingRange.value = settings.spacing;
+  spacingVal.textContent = settings.spacing;
+  gapRange.value = settings.gap;
+  gapVal.textContent = settings.gap;
+
+  spacingRange.addEventListener('input', function () {
+    settings.spacing = parseInt(spacingRange.value, 10);
+    spacingVal.textContent = settings.spacing;
+    rebuildPipes();
+    saveSettings();
+  });
+
+  gapRange.addEventListener('input', function () {
+    settings.gap = parseInt(gapRange.value, 10);
+    gapVal.textContent = settings.gap;
+    // 空隙对新生成的管道立即生效，已在场上的管道保持不变，避免把小鸟困住
+    saveSettings();
+  });
+
+  // 生成背景选择按钮（玩家只负责选择，配色在代码内置）
+  (function buildBgChips() {
+    for (var i = 0; i < backgrounds.length; i++) {
+      (function (idx) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'bg-chip' + (idx === settings.bg ? ' active' : '');
+        b.textContent = backgrounds[idx].name;
+        b.addEventListener('click', function () {
+          settings.bg = idx;
+          for (var j = 0; j < bgOptions.children.length; j++) {
+            bgOptions.children[j].className = 'bg-chip';
+          }
+          b.className = 'bg-chip active';
+          saveSettings();
+        });
+        bgOptions.appendChild(b);
+      })(i);
+    }
+  })();
   window.addEventListener('keydown', function (e) {
     if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); flap(); }
     if (e.code === 'KeyR') { restart(); }
@@ -328,7 +543,7 @@
       if (pipes[j].x + PIPE_W < -10) pipes.splice(j, 1);
     }
     var lastPipe = pipes[pipes.length - 1];
-    if (!lastPipe || lastPipe.x < W - PIPE_SPACING) {
+    if (!lastPipe || lastPipe.x < W - settings.spacing) {
       pipes.push(makePipe(W + 20));
     }
 
@@ -389,23 +604,44 @@
   }
 
   function drawSky() {
+    var bg = currentBg();
     var g = ctx.createLinearGradient(0, 0, 0, FLOOR);
-    g.addColorStop(0, '#f2fcff');
-    g.addColorStop(0.42, '#c6ecff');
-    g.addColorStop(1, '#e8f8ff');
+    g.addColorStop(0, bg.sky[0]);
+    g.addColorStop(0.42, bg.sky[1]);
+    g.addColorStop(1, bg.sky[2]);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    // 太阳
-    var sx = 300, sy = 76;
-    var sg = ctx.createRadialGradient(sx, sy, 6, sx, sy, 66);
-    sg.addColorStop(0, 'rgba(255,247,214,.95)');
-    sg.addColorStop(0.45, 'rgba(255,240,190,.45)');
-    sg.addColorStop(1, 'rgba(255,240,190,0)');
+    // 星星（星夜背景，随 tick 闪烁）
+    if (bg.stars) {
+      for (var i = 0; i < 46; i++) {
+        var sx = ((i * 61.7) % W + W) % W;
+        var sy = ((i * 37.3) % (FLOOR * 0.5)) + 10;
+        var tw = 0.5 + 0.5 * Math.sin(tick * 2 + i * 1.7);
+        ctx.fillStyle = 'rgba(255,255,235,' + (0.25 + 0.55 * tw).toFixed(3) + ')';
+        var sr = i % 3 === 0 ? 1.8 : 1.1;
+        ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    // 太阳 / 月亮
+    var c = bg.celestial;
+    var sg = ctx.createRadialGradient(c.x, c.y, 6, c.x, c.y, c.glowR);
+    sg.addColorStop(0, c.glow1);
+    sg.addColorStop(0.45, c.glow2);
+    sg.addColorStop(1, c.glow3);
     ctx.fillStyle = sg;
-    ctx.beginPath(); ctx.arc(sx, sy, 66, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#fff6d6';
-    ctx.beginPath(); ctx.arc(sx, sy, 24, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(c.x, c.y, c.glowR, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = c.core;
+    ctx.beginPath(); ctx.arc(c.x, c.y, c.coreR, 0, Math.PI * 2); ctx.fill();
+
+    if (c.type === 'moon') {
+      // 月亮环形山
+      ctx.fillStyle = 'rgba(200,220,250,.28)';
+      ctx.beginPath(); ctx.arc(c.x - 8, c.y + 2, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(c.x + 7, c.y - 6, 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(c.x + 2, c.y + 9, 4, 0, Math.PI * 2); ctx.fill();
+    }
   }
 
   function drawCloud(c) {
@@ -413,7 +649,7 @@
     ctx.save();
     ctx.translate(c.x, c.y);
     ctx.scale(s, s);
-    ctx.fillStyle = 'rgba(255,255,255,.92)';
+    ctx.fillStyle = currentBg().cloud;
     ctx.beginPath();
     ctx.arc(0, 0, 18, 0, Math.PI * 2);
     ctx.arc(20, 6, 14, 0, Math.PI * 2);
@@ -424,8 +660,9 @@
   }
 
   function drawHills() {
-    // 远处的海岛，海蓝色
-    ctx.fillStyle = 'rgba(126, 200, 226, .55)';
+    var bg = currentBg();
+    // 远处的海岛，随背景配色
+    ctx.fillStyle = bg.hills[0];
     ctx.beginPath();
     ctx.moveTo(-20, FLOOR);
     ctx.lineTo(40, FLOOR - 78);
@@ -437,7 +674,7 @@
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = 'rgba(86, 176, 214, .40)';
+    ctx.fillStyle = bg.hills[1];
     ctx.beginPath();
     ctx.moveTo(-20, FLOOR);
     ctx.lineTo(70, FLOOR - 46);
@@ -497,27 +734,28 @@
   }
 
   function drawGround() {
+    var bg = currentBg();
     // 海浪条
-    ctx.fillStyle = '#8fd8f2';
+    ctx.fillStyle = bg.groundWave;
     ctx.fillRect(0, FLOOR - 8, W, 10);
-    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.fillStyle = bg.foam;
     for (var i = -1; i < W / 28 + 2; i++) {
       var x = i * 28 - groundX;
       ctx.beginPath();
       ctx.arc(x + 14, FLOOR - 4, 7, Math.PI, 0);
       ctx.fill();
     }
-    // 奶油色地面
+    // 地面
     var g = ctx.createLinearGradient(0, FLOOR, 0, H);
-    g.addColorStop(0, '#fff6e0');
-    g.addColorStop(1, '#f3e2bf');
+    g.addColorStop(0, bg.groundTop);
+    g.addColorStop(1, bg.groundBottom);
     ctx.fillStyle = g;
     ctx.fillRect(0, FLOOR, W, GROUND_H);
-    ctx.strokeStyle = '#e7d3a8';
+    ctx.strokeStyle = bg.groundLine;
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(0, FLOOR + 1); ctx.lineTo(W, FLOOR + 1); ctx.stroke();
     // 斜纹
-    ctx.strokeStyle = 'rgba(233, 214, 172, .9)';
+    ctx.strokeStyle = bg.groundStripe;
     ctx.lineWidth = 7;
     for (var j = -2; j < W / 28 + 3; j++) {
       var bx = j * 28 - groundX;
