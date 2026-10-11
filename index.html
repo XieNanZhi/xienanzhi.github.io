@@ -3,998 +3,710 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>谢同学 - Flappy Bird</title>
-<meta name="description" content="奶油海风配色的 Flappy Bird 谢同学，点击让小鸟穿过管道空隙，纯前端单文件，手机电脑都能玩。">
-<meta property="og:title" content="谢同学 - Flappy Bird">
-<meta property="og:description" content="奶油 · 天蓝 · 海蓝配色的谢同学，点击起飞，穿过管道空隙得分。">
+<title>谢永胜 | 前端开发 · 软件测试 · 个人作品集</title>
+<meta name="description" content="谢永胜的个人作品集：前端开发 / 软件测试方向求职中。代表作品 Flappy Bird 网页游戏由我从零手写并上线，原生 JavaScript + Canvas，零依赖单文件。">
+<meta name="keywords" content="谢永胜,前端开发,软件测试,个人作品集,JavaScript,Canvas,求职">
+<meta property="og:title" content="谢永胜 | 前端开发 · 软件测试 · 个人作品集">
+<meta property="og:description" content="代表作品 Flappy Bird 网页游戏：原生 JavaScript + Canvas 从零手写并上线，零依赖单文件，欢迎在线试玩。">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://xienanzhi.github.io/">
+<meta name="robots" content="index, follow">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
     font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
     color: #2f5d7c;
     background:
-      radial-gradient(1200px 600px at 15% -10%, #e6f7ff 0%, rgba(230,247,255,0) 60%),
-      radial-gradient(900px 500px at 90% 0%, #d9f2ff 0%, rgba(217,242,255,0) 55%),
-      linear-gradient(180deg, #fdf9ef 0%, #f6fbff 55%, #eaf6ff 100%);
-    min-height: 100%;
+      radial-gradient(1200px 600px at 12% -10%, #e6f7ff 0%, rgba(230,247,255,0) 60%),
+      radial-gradient(900px 500px at 92% 0%, #d9f2ff 0%, rgba(217,242,255,0) 55%),
+      linear-gradient(180deg, #fdf9ef 0%, #f4fbff 60%, #eaf6ff 100%);
+    min-height: 100vh;
+  }
+  a { color: #2f9fd8; }
+
+  /* ---------- 顶部导航 ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 253, 246, .82);
+    border-bottom: 1px solid rgba(205, 234, 248, .8);
+  }
+  .nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 12px 20px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 24px 16px 40px;
-  }
-  header { text-align: center; margin-bottom: 18px; }
-  h1 {
-    margin: 0 0 8px;
-    font-size: 28px;
-    letter-spacing: 2px;
-    color: #1f6f9c;
-    text-shadow: 0 2px 0 #ffffff;
-  }
-  .sub {
-    margin: 0;
-    font-size: 14px;
-    color: #6f9dbb;
-    letter-spacing: 1px;
-  }
-  .stage {
-    position: relative;
-    width: min(360px, 100%);
-    border-radius: 22px;
-    padding: 10px;
-    background: linear-gradient(180deg, #ffffff 0%, #f3fbff 100%);
-    box-shadow: 0 18px 40px rgba(52, 130, 180, .18), 0 2px 0 #ffffff inset;
-  }
-  canvas {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 16px;
-    background: #cfeeff;
-    touch-action: manipulation;
-    cursor: pointer;
-    box-shadow: 0 0 0 3px #e4f4ff inset;
-  }
-  .toolbar {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 12px;
+    justify-content: space-between;
+    gap: 12px;
     flex-wrap: wrap;
   }
-  .btn {
-    font: inherit;
-    font-size: 14px;
-    padding: 8px 18px;
-    border-radius: 999px;
-    border: 1px solid #bfe6f7;
-    background: #eaf8ff;
+  .brand {
+    font-weight: 700;
+    font-size: 16px;
     color: #1f6f9c;
-    cursor: pointer;
-    transition: transform .12s ease, background .2s ease, box-shadow .2s ease;
-    box-shadow: 0 4px 12px rgba(52, 130, 180, .12);
-  }
-  .btn:hover { background: #d9f1ff; transform: translateY(-1px); }
-  .btn:active { transform: translateY(1px); }
-  .btn.primary { background: linear-gradient(180deg, #63cdf5 0%, #2f9fd8 100%); color: #fff; border-color: #2f9fd8; }
-  .btn.primary:hover { background: linear-gradient(180deg, #74d4f8 0%, #37a8e2 100%); }
-
-  .settings {
-    width: min(360px, 100%);
-    margin-top: 14px;
-    background: #fffdf6;
-    border: 2px solid #cdeaf8;
-    border-radius: 16px;
-    padding: 14px 16px 16px;
-    box-shadow: 0 10px 24px rgba(52, 130, 180, .10);
-  }
-  .settings h2 { margin: 0 0 4px; font-size: 16px; color: #1f6f9c; }
-  .settings .tip { margin: 0 0 12px; font-size: 12px; color: #8fb4c9; }
-  .setting-row { margin-bottom: 12px; }
-  .setting-row:last-child { margin-bottom: 0; }
-  .setting-row .label {
+    text-decoration: none;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 13.5px;
-    color: #2f5d7c;
-    margin-bottom: 5px;
+    gap: 8px;
   }
-  .setting-row .val { color: #2f9fd8; font-weight: 700; font-size: 13px; }
-  input[type="range"] { width: 100%; accent-color: #2f9fd8; cursor: pointer; margin: 0; }
-  .bg-options { display: flex; gap: 8px; flex-wrap: wrap; }
-  .bg-chip {
-    font: inherit;
-    font-size: 13px;
+  .brand small { font-weight: 500; color: #8fb4c9; font-size: 12px; }
+  .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-links a {
+    color: #2f5d7c;
+    text-decoration: none;
+    font-size: 14px;
     padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid #cdeaf8;
-    background: #eaf8ff;
-    color: #1f6f9c;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease, transform .12s ease;
+    transition: background .2s ease, color .2s ease;
   }
-  .bg-chip:hover { background: #d9f1ff; }
-  .bg-chip.active {
+  .nav-links a:hover { background: #eaf8ff; color: #1f6f9c; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 64px 0 8px; }
+  .sec-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 26px;
+  }
+  .sec-title h2 { margin: 0; font-size: 24px; color: #1f6f9c; letter-spacing: 1px; }
+  .sec-title .line { flex: 1; height: 2px; background: linear-gradient(90deg, #bfe6f7, rgba(191,230,247,0)); border-radius: 2px; }
+  .sec-title .no { color: #8fc6e6; font-weight: 700; font-size: 14px; font-family: ui-monospace, Consolas, monospace; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 84px 0 20px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #1f7a4d;
+    background: #e8f8ee;
+    border: 1px solid #bfe8d2;
+    border-radius: 999px;
+    padding: 5px 14px;
+    margin-bottom: 18px;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #34b46f;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  h1 { margin: 0 0 14px; font-size: clamp(30px, 5vw, 44px); line-height: 1.2; color: #1f6f9c; }
+  h1 .wave { display: inline-block; animation: wave 2.4s ease-in-out infinite; transform-origin: 70% 70%; }
+  @keyframes wave { 0%,60%,100% { transform: rotate(0); } 10%,30% { transform: rotate(14deg); } 20% { transform: rotate(-6deg); } 40% { transform: rotate(-4deg); } }
+  .hero-roles { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 18px; }
+  .role {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #eaf8ff 0%, #d9f1ff 100%);
+    border: 1px solid #bfe6f7;
+    color: #1f6f9c;
+  }
+  .hero p.lead {
+    margin: 0 0 26px;
+    font-size: 16px;
+    line-height: 1.9;
+    color: #4a7a99;
+    max-width: 560px;
+  }
+  .hero p.lead b { color: #1f6f9c; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 26px;
+    border-radius: 999px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary {
+    background: linear-gradient(180deg, #63cdf5 0%, #2f9fd8 100%);
+    color: #fff;
+    border: 1px solid #2f9fd8;
+    box-shadow: 0 10px 22px rgba(47, 159, 216, .30);
+  }
+  .btn-primary:hover { box-shadow: 0 14px 26px rgba(47, 159, 216, .40); }
+  .btn-ghost {
+    background: #ffffff;
+    color: #1f6f9c;
+    border: 1px solid #cdeaf8;
+    box-shadow: 0 6px 16px rgba(52, 130, 180, .12);
+  }
+  .btn-ghost:hover { background: #eaf8ff; }
+
+  .hero-visual { position: relative; }
+  .bird-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f3fbff 100%);
+    border: 1px solid #dceef9;
+    border-radius: 28px;
+    padding: 30px 24px;
+    box-shadow: 0 24px 50px rgba(52, 130, 180, .16);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .bird-card::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background:
+      radial-gradient(240px 120px at 20% 15%, rgba(127, 216, 255, .25), transparent 70%),
+      radial-gradient(240px 120px at 80% 85%, rgba(255, 238, 200, .45), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-visual .float { position: relative; animation: float 3.2s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .hero-visual .cap {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #8fb4c9;
+    position: relative;
+  }
+  .hero-visual .cap b { color: #2f9fd8; }
+
+  /* ---------- 数据条 ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin: 44px 0 0;
+  }
+  .stat {
+    background: #fffdf6;
+    border: 1px solid #e6f2f8;
+    border-radius: 18px;
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: 0 10px 24px rgba(52, 130, 180, .08);
+  }
+  .stat .num {
+    font-size: 26px;
+    font-weight: 800;
+    color: #2f9fd8;
+    font-family: ui-monospace, Consolas, monospace;
+  }
+  .stat .num small { font-size: 14px; font-weight: 700; }
+  .stat .lbl { margin-top: 4px; font-size: 12.5px; color: #6f9dbb; }
+
+  /* ---------- 项目卡 ---------- */
+  .project {
+    background: #fffdf6;
+    border: 1px solid #e6f2f8;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(52, 130, 180, .12);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.4fr);
+  }
+  .project-demo {
+    background: linear-gradient(180deg, #eaf8ff 0%, #f4fbff 100%);
+    border-right: 1px solid #e6f2f8;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .project-demo .frame {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid #cdeaf8;
+    box-shadow: 0 10px 26px rgba(52, 130, 180, .18);
+    background: #cfeeff;
+    flex: 1;
+    min-height: 380px;
+  }
+  .project-demo iframe { width: 100%; height: 100%; min-height: 380px; border: 0; display: block; }
+  .project-demo .hint {
+    font-size: 12.5px;
+    color: #8fb4c9;
+    text-align: center;
+  }
+  .project-demo .hint a { font-weight: 600; }
+  .project-info { padding: 30px 30px 26px; }
+  .project-info .tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #2f9fd8;
+    background: #eaf8ff;
+    border: 1px solid #cdeaf8;
+    border-radius: 6px;
+    padding: 3px 10px;
+    margin-bottom: 12px;
+  }
+  .project-info h3 { margin: 0 0 10px; font-size: 21px; color: #1f6f9c; }
+  .project-info .desc { margin: 0 0 16px; font-size: 14.5px; line-height: 1.85; color: #4a7a99; }
+  .tech-list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 9px; }
+  .tech-list li {
+    position: relative;
+    padding-left: 26px;
+    font-size: 13.8px;
+    line-height: 1.75;
+    color: #3d6d8d;
+  }
+  .tech-list li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    width: 8px; height: 8px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #63cdf5, #2f9fd8);
+  }
+  .tech-list b { color: #1f6f9c; }
+  .project-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .project-links .btn { padding: 10px 20px; font-size: 14px; }
+
+  /* ---------- 技能 ---------- */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .skill-card {
+    background: #fffdf6;
+    border: 1px solid #e6f2f8;
+    border-radius: 20px;
+    padding: 24px 24px 20px;
+    box-shadow: 0 10px 24px rgba(52, 130, 180, .09);
+  }
+  .skill-card h3 { margin: 0 0 14px; font-size: 17px; color: #1f6f9c; display: flex; align-items: center; gap: 10px; }
+  .skill-card h3 .ico {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #eaf8ff, #d9f1ff);
+    font-size: 17px;
+    flex: none;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-size: 13px;
+    color: #2f5d7c;
+    background: #f2fbff;
+    border: 1px solid #d5ecf8;
+    border-radius: 999px;
+    padding: 5px 13px;
+  }
+  .chip.core {
     background: linear-gradient(180deg, #63cdf5 0%, #2f9fd8 100%);
     color: #fff;
     border-color: #2f9fd8;
+    font-weight: 600;
   }
+  .skill-card p { margin: 14px 0 0; font-size: 13px; line-height: 1.8; color: #6f9dbb; }
 
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(230px, 300px) 360px minmax(230px, 300px);
-    gap: 22px;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
+  /* ---------- 质量实践 ---------- */
+  .quality {
+    background: linear-gradient(180deg, #ffffff 0%, #f3fbff 100%);
+    border: 1px solid #dceef9;
+    border-radius: 24px;
+    padding: 30px 30px 26px;
+    box-shadow: 0 14px 34px rgba(52, 130, 180, .10);
   }
-  .side { min-width: 0; }
-  .side .settings { width: 100%; }
-
-  @media (max-width: 920px) {
-    .layout {
-      grid-template-columns: minmax(0, 1fr);
-      max-width: 420px;
-    }
-    .layout .stage { order: 1; }
-    .layout .options { order: 2; }
-    .layout .guide { order: 3; }
-  }
-
-  .cards {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .card {
+  .quality h3 { margin: 0 0 8px; font-size: 19px; color: #1f6f9c; }
+  .quality .sub { margin: 0 0 18px; font-size: 13.5px; color: #6f9dbb; }
+  .qa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .qa {
     background: #fffdf6;
     border: 1px solid #e6f2f8;
     border-radius: 16px;
     padding: 16px 18px;
-    box-shadow: 0 10px 24px rgba(52, 130, 180, .10);
   }
-  .card h2 { margin: 0 0 8px; font-size: 16px; color: #1f6f9c; }
-  .card p { margin: 6px 0; font-size: 13.5px; line-height: 1.7; color: #5b8aa8; }
-  .key {
-    display: inline-block;
-    min-width: 22px;
-    text-align: center;
-    padding: 1px 7px;
-    margin: 0 2px;
-    border-radius: 6px;
+  .qa b { display: block; font-size: 14px; color: #1f6f9c; margin-bottom: 6px; }
+  .qa span { font-size: 13px; line-height: 1.75; color: #5b8aa8; }
+  .qa code {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
     background: #eaf8ff;
-    border: 1px solid #cdeaf8;
-    color: #2f9fd8;
-    font-size: 12.5px;
+    border-radius: 5px;
+    padding: 1px 5px;
+    color: #1f7fb8;
   }
-  footer { margin-top: 26px; font-size: 12.5px; color: #8fb4c9; text-align: center; }
+
+  /* ---------- 关于 & 联系 ---------- */
+  .about-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; }
+  .about-card, .contact-card {
+    background: #fffdf6;
+    border: 1px solid #e6f2f8;
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 10px 24px rgba(52, 130, 180, .09);
+  }
+  .about-card h3, .contact-card h3 { margin: 0 0 12px; font-size: 18px; color: #1f6f9c; }
+  .about-card p { margin: 0 0 10px; font-size: 14px; line-height: 1.9; color: #4a7a99; }
+  .about-card p b { color: #1f6f9c; }
+  .contact-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .contact-list li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #4a7a99; }
+  .contact-list .ico {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #eaf8ff, #d9f1ff);
+    border: 1px solid #cdeaf8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    font-size: 16px;
+  }
+  .contact-list a { color: #1f6f9c; font-weight: 600; text-decoration: none; }
+  .contact-list a:hover { color: #2f9fd8; text-decoration: underline; }
+  .contact-list small { display: block; color: #8fb4c9; font-size: 12px; margin-top: 2px; }
+
+  footer {
+    margin-top: 70px;
+    padding: 26px 20px 34px;
+    text-align: center;
+    font-size: 13px;
+    color: #8fb4c9;
+    border-top: 1px solid rgba(205, 234, 248, .7);
+    background: rgba(255, 253, 246, .6);
+  }
+  footer a { color: #2f9fd8; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .heart { color: #f2803c; }
+
+  /* ---------- 滚动出现动画 ---------- */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.show { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 880px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+    .hero-visual { max-width: 420px; margin: 0 auto; }
+    .project { grid-template-columns: 1fr; }
+    .project-demo { border-right: 0; border-bottom: 1px solid #e6f2f8; }
+    .about-grid { grid-template-columns: 1fr; }
+    section { padding: 48px 0 4px; }
+    .hero { padding: 56px 0 10px; }
+  }
+  @media (max-width: 560px) {
+    .nav-inner { padding: 10px 14px; }
+    .nav-links a { font-size: 13px; padding: 5px 9px; }
+    .project-info { padding: 22px 20px; }
+    .quality { padding: 22px 18px; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>猴哥制作</h1>
-  <p class="sub">Flappy Bird </p>
-</header>
-
-<div class="layout">
-  <aside class="side guide">
-    <div class="cards">
-      <div class="card">
-        <h2>怎么玩</h2>
-        <p>点击画面（或按 <span class="key">空格</span> / <span class="key">↑</span>）让小鸟向上飞。</p>
-        <p>松开就会自然下落，<b>穿过上下管道的空隙</b> 得 1 分。</p>
-        <p>撞到管道或掉到地面即结束，<span class="key">R</span> 键重开。</p>
-      </div>
-      <div class="card">
-        <h2>小技巧</h2>
-        <p>不要狂点，一下一下地点，让小鸟保持平稳的滑翔节奏。</p>
-        <p>眼睛盯着下一根管道的空隙中心，而不是盯着小鸟。</p>
-        <p>下落时提前轻点，比撞到了再补点更容易救回来。</p>
-      </div>
-      <div class="card">
-        <h2>关于</h2>
-        <p>纯 HTML + CSS + JavaScript 手写，无任何依赖，手机电脑都能玩。</p>
-        <p>最高分会自动保存在本机浏览器里。</p>
-      </div>
-    </div>
-  </aside>
-
-  <div class="stage">
-    <canvas id="game" width="360" height="640" aria-label="小鸟快飞游戏画面"></canvas>
-    <div class="toolbar">
-      <button class="btn primary" id="btnStart">开始游戏</button>
-      <button class="btn" id="btnSound">音效：开</button>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <ellipse cx="13" cy="14" rx="10" ry="8.5" fill="#fff" stroke="#f2c98a" stroke-width="1.4"/>
+        <ellipse cx="14" cy="17" rx="6.5" ry="4.5" fill="#fff6dd"/>
+        <ellipse cx="8.5" cy="15" rx="6" ry="4" fill="#7fd8ff" stroke="#2f96c9" stroke-width="1.2"/>
+        <circle cx="17.5" cy="11.5" r="3.2" fill="#fff" stroke="#e7bd85"/>
+        <circle cx="18.5" cy="11.5" r="1.5" fill="#2c4a63"/>
+        <path d="M22 13 l4 1.5 -4 2 z" fill="#ff9e63"/>
+      </svg>
+      谢永胜 <small>前端 · 测试</small>
+    </a>
+    <div class="nav-links">
+      <a href="#work">作品</a>
+      <a href="#skills">技能</a>
+      <a href="#quality">质量实践</a>
+      <a href="#about">关于</a>
+      <a href="#contact">联系我</a>
     </div>
   </div>
+</nav>
 
-  <aside class="side options">
-    <div class="settings">
-      <h2>游戏设置</h2>
-      <p class="tip">调整后立即生效，重新开局也会沿用当前设置。</p>
-      <div class="setting-row">
-        <div class="label"><span>柱子左右距离（间距）</span><span class="val" id="spacingVal">220</span></div>
-        <input type="range" id="spacingRange" min="160" max="320" step="10" value="220">
+<main class="wrap" id="top">
+
+  <!-- ============ Hero ============ -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-badge"><span class="dot"></span>求职中 · 前端开发 / 软件测试方向</span>
+        <h1>你好，我是谢永胜<span class="wave">👋</span></h1>
+        <div class="hero-roles">
+          <span class="role">前端开发</span>
+          <span class="role">软件测试</span>
+          <span class="role">Web / 小游戏</span>
+        </div>
+        <p class="lead">
+          我喜欢把想法做成<b>能跑、能玩、能上线</b>的东西。你现在看到的这个网站——从页面设计、交互开发、Canvas 游戏引擎到
+          GitHub Pages 部署——<b>全部由我独立完成</b>，不依赖任何框架和第三方库。
+          与其罗列名词，不如直接试试下面这个我自己写的游戏。
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="game.html">在线试玩我的作品 →</a>
+          <a class="btn btn-ghost" href="https://github.com/XieNanZhi/xienanzhi.github.io" target="_blank" rel="noopener">GitHub 查看源码</a>
+          <a class="btn btn-ghost" href="#contact">联系我</a>
+        </div>
       </div>
-      <div class="setting-row">
-        <div class="label"><span>柱子上下距离（空隙）</span><span class="val" id="gapVal">160</span></div>
-        <input type="range" id="gapRange" min="120" max="280" step="10" value="160">
-      </div>
-      <div class="setting-row">
-        <div class="label"><span>背景选择</span></div>
-        <div class="bg-options" id="bgOptions"></div>
+      <div class="hero-visual">
+        <div class="bird-card">
+          <div class="float">
+            <svg width="150" height="130" viewBox="0 0 150 130" aria-label="卡通小鸟">
+              <ellipse cx="75" cy="72" rx="55" ry="46" fill="#fff" stroke="#f2c98a" stroke-width="2.5"/>
+              <ellipse cx="79" cy="88" rx="36" ry="24" fill="#fff6dd"/>
+              <ellipse cx="60" cy="80" rx="33" ry="21" fill="#a8e6ff" stroke="#2f96c9" stroke-width="2"/>
+              <circle cx="102" cy="56" r="15" fill="#fff" stroke="#e7bd85" stroke-width="1.6"/>
+              <circle cx="107" cy="56" r="7" fill="#2c4a63"/>
+              <circle cx="110" cy="53" r="2.6" fill="#fff"/>
+              <path d="M128 62 l16 5 -16 9 z" fill="#ff9e63"/>
+              <path d="M127 71 l13 1.5 -13 6 z" fill="#f2803c"/>
+              <path d="M24 66 l-24 -10 4 18 z" fill="#ffe0ab"/>
+              <ellipse cx="40" cy="26" rx="20" ry="7" fill="rgba(255,255,255,.9)" transform="rotate(-8 40 26)"/>
+              <ellipse cx="118" cy="20" rx="16" ry="6" fill="rgba(255,255,255,.75)" transform="rotate(6 118 20)"/>
+            </svg>
+          </div>
+          <p class="cap">这只小鸟由 <b>Canvas 2D</b> 实时绘制，每一帧都是代码算出来的</p>
+        </div>
       </div>
     </div>
-  </aside>
-</div>
 
-<footer>奶油 · 天蓝 · 海蓝 &nbsp;|&nbsp; 用 GitHub Pages 免费托管</footer>
+    <div class="stats reveal">
+      <div class="stat"><div class="num">1000<small>+</small></div><div class="lbl">行手写代码</div></div>
+      <div class="stat"><div class="num">0</div><div class="lbl">外部依赖 / 构建工具</div></div>
+      <div class="stat"><div class="num">5</div><div class="lbl">套游戏场景主题</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">类输入端（鼠标 / 触屏 / 键盘）</div></div>
+    </div>
+  </section>
+
+  <!-- ============ 作品 ============ -->
+  <section id="work">
+    <div class="sec-title"><span class="no">01</span><h2>代表作品</h2><span class="line"></span></div>
+    <div class="project reveal">
+      <div class="project-demo">
+        <div class="frame">
+          <iframe src="game.html" title="Flappy Bird 网页游戏在线试玩" loading="lazy"></iframe>
+        </div>
+        <p class="hint">上面就是实时运行的游戏，可以直接玩 · 全屏体验请 <a href="game.html" target="_blank" rel="noopener">打开独立页面</a></p>
+      </div>
+      <div class="project-info">
+        <span class="tag">PERSONAL PROJECT · 已上线</span>
+        <h3>Flappy Bird 网页游戏</h3>
+        <p class="desc">
+          复刻经典 Flappy Bird 的完整玩法：点击 / 空格控制小鸟飞行，穿越管道空隙得分，
+          内置难度递增、五套场景主题、可调参数设置与本地最高分记录。
+          从物理引擎到音效全部手写，单文件、零依赖，部署在 GitHub Pages 上。
+        </p>
+        <ul class="tech-list">
+          <li><b>游戏循环</b>：requestAnimationFrame + 帧时间步长（delta time），不同刷新率下手感一致</li>
+          <li><b>物理系统</b>：重力加速度、跳跃冲量、姿态角度插值，小鸟随速度抬头俯冲</li>
+          <li><b>碰撞检测</b>：AABB 包围盒算法，含容差收缩，避免“贴边判死”的挫败感</li>
+          <li><b>渲染</b>：Canvas 2D 分层绘制（天空 / 星月 / 云 / 海岛 / 管道 / 地面），devicePixelRatio 高清适配</li>
+          <li><b>音效</b>：WebAudio API 现场合成（振荡器 + 包络），不加载任何音频文件</li>
+          <li><b>状态管理</b>：ready / play / over 三态状态机，切后台自动暂停防跳帧</li>
+          <li><b>数据持久化</b>：localStorage 保存最高分与玩家设置，带解析容错</li>
+        </ul>
+        <div class="project-links">
+          <a class="btn btn-primary" href="game.html" target="_blank" rel="noopener">在线试玩</a>
+          <a class="btn btn-ghost" href="https://github.com/XieNanZhi/xienanzhi.github.io/blob/main/game.html" target="_blank" rel="noopener">查看源码</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 技能 ============ -->
+  <section id="skills">
+    <div class="sec-title"><span class="no">02</span><h2>技能栈</h2><span class="line"></span></div>
+    <div class="skill-grid reveal">
+      <div class="skill-card">
+        <h3><span class="ico">{"<"}</span>前端开发</h3>
+        <div class="chips">
+          <span class="chip core">HTML5</span>
+          <span class="chip core">CSS3</span>
+          <span class="chip core">JavaScript</span>
+          <span class="chip">Canvas 2D</span>
+          <span class="chip">WebAudio</span>
+          <span class="chip">Flex / Grid 布局</span>
+          <span class="chip">响应式设计</span>
+          <span class="chip">DOM 事件模型</span>
+          <span class="chip">localStorage</span>
+          <span class="chip">IntersectionObserver</span>
+        </div>
+        <p>本站全部页面为原生手写，无框架、无构建工具；能独立完成从静态页面到 Canvas 动效的开发。</p>
+      </div>
+      <div class="skill-card">
+        <h3><span class="ico">✓</span>测试与质量</h3>
+        <div class="chips">
+          <span class="chip core">功能测试</span>
+          <span class="chip core">用例设计</span>
+          <span class="chip">边界值分析</span>
+          <span class="chip">等价类划分</span>
+          <span class="chip">缺陷定位与描述</span>
+          <span class="chip">兼容性验证</span>
+          <span class="chip">控制台调试</span>
+          <span class="chip">异常场景覆盖</span>
+        </div>
+        <p>习惯给自己写的功能先想“怎么把它弄坏”：边界、异常输入、多端表现，见下方「质量实践」。</p>
+      </div>
+      <div class="skill-card">
+        <h3><span class="ico">⚙</span>工程与部署</h3>
+        <div class="chips">
+          <span class="chip core">Git</span>
+          <span class="chip core">GitHub Pages</span>
+          <span class="chip">REST API</span>
+          <span class="chip">命令行</span>
+          <span class="chip">SEO 基础优化</span>
+          <span class="chip">移动端调试</span>
+          <span class="chip">跨浏览器适配</span>
+        </div>
+        <p>本站通过 Git 推送与 GitHub API 完成发布，掌握了从代码到上线的完整链路。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 质量实践 ============ -->
+  <section id="quality">
+    <div class="sec-title"><span class="no">03</span><h2>这个项目里的质量实践</h2><span class="line"></span></div>
+    <div class="quality reveal">
+      <h3>写完只是开始，测过才算完成</h3>
+      <p class="sub">以下是 Flappy Bird 项目开发中，我针对异常与边界场景做过的实际处理（均可对照源码验证）：</p>
+      <div class="qa-grid">
+        <div class="qa">
+          <b>边界值控制</b>
+          <span>管道空隙随得分收窄但锁定下限 <code>110px</code>，保证极限难度仍可通过；小鸟触顶时位置钳制、速度归零。</span>
+        </div>
+        <div class="qa">
+          <b>异常输入防护</b>
+          <span>结束界面误触不直接重开（需命中按钮区域）；键盘 <code>preventDefault</code> 阻止空格滚动页面。</span>
+        </div>
+        <div class="qa">
+          <b>生命周期处理</b>
+          <span>切换标签页 / 最小化时通过 <code>visibilitychange</code> 重置时间戳，避免回来时一帧跳变直接“坠机”。</span>
+        </div>
+        <div class="qa">
+          <b>多端兼容验证</b>
+          <span>鼠标、触屏（<code>touch-action</code> + 被动事件）、键盘三路输入统一收口；<code>devicePixelRatio</code> 适配高分屏不模糊。</span>
+        </div>
+        <div class="qa">
+          <b>数据容错</b>
+          <span>localStorage 读取全部包裹 <code>try/catch</code> 并校验取值范围，旧数据损坏时回退默认配置。</span>
+        </div>
+        <div class="qa">
+          <b>性能意识</b>
+          <span>单文件零请求、无图片资源（全程序化绘制）、帧循环内零对象分配，低端手机也流畅。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 关于 & 联系 ============ -->
+  <section id="about">
+    <div class="sec-title"><span class="no">04</span><h2>关于我 &amp; 联系方式</h2><span class="line"></span></div>
+    <div class="about-grid reveal">
+      <div class="about-card">
+        <h3>为什么值得给我一个面试机会</h3>
+        <p>
+          <b>交付闭环能力</b>：这个网站从需求构思、UI 配色、游戏逻辑、代码提交到线上部署，每一步都是我独立完成的——
+          不只是“会写代码”，而是能把一个想法完整做成上线的产品。
+        </p>
+        <p>
+          <b>工程习惯</b>：代码有注释、命名可读、配置集中管理；遇到问题先定位再修改，不靠“改到碰巧能跑”。
+        </p>
+        <p>
+          <b>求职方向</b>：前端开发工程师 / 软件测试工程师。坐标<b>湖南·长沙</b>，欢迎随时联系，附上简历与更多细节。
+        </p>
+      </div>
+      <div class="contact-card" id="contact">
+        <h3>联系我</h3>
+        <ul class="contact-list">
+          <li>
+            <span class="ico">✉</span>
+            <a href="mailto:3353303284@qq.com">3353303284@qq.com</a>
+            <small>邮件回复通常在 24 小时内</small>
+          </li>
+          <li>
+            <span class="ico">☎</span>
+            <a href="tel:17373378501">17373378501</a>
+            <small>微信同号，工作时间随时可联系</small>
+          </li>
+          <li>
+            <span class="ico">⌂</span>
+            <a href="https://github.com/XieNanZhi" target="_blank" rel="noopener">github.com/XieNanZhi</a>
+            <small>本站及后续作品都会更新在这里</small>
+          </li>
+          <li>
+            <span class="ico">◉</span>
+            <span>湖南 · 长沙</span>
+            <small>可到岗城市以面试沟通为准</small>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  本站由 <b>谢永胜</b> 手写并部署于 <a href="https://github.com/XieNanZhi/xienanzhi.github.io" target="_blank" rel="noopener">GitHub Pages</a>
+  <span class="heart">♥</span> 原生 HTML / CSS / JavaScript · 零依赖 · © 2026
+</footer>
 
 <script>
 (function () {
   'use strict';
-
-  var canvas = document.getElementById('game');
-  var ctx = canvas.getContext('2d');
-  var btnStart = document.getElementById('btnStart');
-  var btnSound = document.getElementById('btnSound');
-
-  // ---------- 基础参数（逻辑分辨率） ----------
-  var W = 360, H = 640;
-  var GROUND_H = 92;
-  var FLOOR = H - GROUND_H;          // 地面线
-  var BIRD_X = 96, BIRD_R = 13;
-  var GRAVITY = 1500;                // px/s^2
-  var JUMP_VEL = -430;               // px/s
-  var PIPE_W = 62;
-  var BASE_SPEED = 168;              // px/s
-
-  // 高清屏适配
-  function fitDPR() {
-    var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.aspectRatio = W + ' / ' + H;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  fitDPR();
-  window.addEventListener('resize', function () { fitDPR(); draw(); });
-
-  // ---------- 状态 ----------
-  var state = 'ready';               // ready | play | over
-  var bird, pipes, score, best, speed, groundX, clouds, tick, flash, lastTs, raf;
-  var soundOn = true;
-  best = parseInt(localStorage.getItem('flappy-best') || '0', 10) || 0;
-
-  // ---------- 玩家自定义设置（自动记忆上次选择） ----------
-  var settings = (function () {
-    var saved = null;
-    try { saved = JSON.parse(localStorage.getItem('flappy-settings') || 'null'); } catch (e) { saved = null; }
-    return {
-      spacing: (saved && saved.spacing >= 160 && saved.spacing <= 320) ? saved.spacing : 220,
-      gap: (saved && saved.gap >= 120 && saved.gap <= 280) ? saved.gap : 160,
-      bg: (saved && typeof saved.bg === 'number') ? saved.bg : 0
-    };
-  })();
-
-  function saveSettings() {
-    try { localStorage.setItem('flappy-settings', JSON.stringify(settings)); } catch (e) { /* 忽略存储错误 */ }
-  }
-
-  // ---------- 背景预设（玩家只负责选择） ----------
-  var backgrounds = [
-    {
-      name: '奶油海风',
-      sky: ['#f2fcff', '#c6ecff', '#e8f8ff'],
-      celestial: { type: 'sun', x: 300, y: 76, core: '#fff6d6', glow1: 'rgba(255,247,214,.95)', glow2: 'rgba(255,240,190,.45)', glow3: 'rgba(255,240,190,0)', coreR: 24, glowR: 66 },
-      stars: false,
-      cloud: 'rgba(255,255,255,.92)',
-      hills: ['rgba(126, 200, 226, .55)', 'rgba(86, 176, 214, .40)'],
-      groundWave: '#8fd8f2', foam: 'rgba(255,255,255,.6)',
-      groundTop: '#fff6e0', groundBottom: '#f3e2bf', groundLine: '#e7d3a8', groundStripe: 'rgba(233, 214, 172, .9)'
-    },
-    {
-      name: '黄昏晚霞',
-      sky: ['#ffe9c9', '#ffc6a3', '#f7b9c3'],
-      celestial: { type: 'sun', x: 300, y: 86, core: '#fff3c4', glow1: 'rgba(255,203,120,.92)', glow2: 'rgba(255,168,120,.42)', glow3: 'rgba(255,168,120,0)', coreR: 26, glowR: 80 },
-      stars: false,
-      cloud: 'rgba(255,255,255,.85)',
-      hills: ['rgba(214, 128, 108, .52)', 'rgba(180, 98, 122, .42)'],
-      groundWave: '#f0a27e', foam: 'rgba(255,255,255,.5)',
-      groundTop: '#ffe8cf', groundBottom: '#f2c79e', groundLine: '#e0b48a', groundStripe: 'rgba(226, 170, 120, .9)'
-    },
-    {
-      name: '静谧星夜',
-      sky: ['#0b1f3f', '#123057', '#0a1730'],
-      celestial: { type: 'moon', x: 300, y: 78, core: '#fff8d9', glow1: 'rgba(255,248,217,.9)', glow2: 'rgba(255,240,180,.35)', glow3: 'rgba(255,240,180,0)', coreR: 22, glowR: 70 },
-      stars: true,
-      cloud: 'rgba(210, 225, 245, .25)',
-      hills: ['rgba(30, 70, 110, .62)', 'rgba(22, 55, 95, .55)'],
-      groundWave: '#2b5f85', foam: 'rgba(180,210,230,.35)',
-      groundTop: '#1c3a55', groundBottom: '#122536', groundLine: '#2f5f82', groundStripe: 'rgba(60, 110, 150, .9)'
-    },
-    {
-      name: '薄荷森林',
-      sky: ['#e9f9ee', '#cdf0de', '#e3f6ec'],
-      celestial: { type: 'sun', x: 300, y: 80, core: '#fffbe0', glow1: 'rgba(255,251,224,.9)', glow2: 'rgba(255,246,190,.4)', glow3: 'rgba(255,246,190,0)', coreR: 24, glowR: 66 },
-      stars: false,
-      cloud: 'rgba(255,255,255,.9)',
-      hills: ['rgba(96, 190, 150, .5)', 'rgba(64, 168, 130, .42)'],
-      groundWave: '#6fc9a0', foam: 'rgba(255,255,255,.55)',
-      groundTop: '#eaf7d8', groundBottom: '#cfe8b8', groundLine: '#b9d99f', groundStripe: 'rgba(150, 200, 130, .9)'
-    },
-    {
-      name: '蜜桃甜心',
-      sky: ['#fff0f4', '#ffd9e4', '#ffe9ee'],
-      celestial: { type: 'sun', x: 300, y: 80, core: '#fff2e0', glow1: 'rgba(255,200,200,.9)', glow2: 'rgba(255,178,192,.4)', glow3: 'rgba(255,178,192,0)', coreR: 24, glowR: 66 },
-      stars: false,
-      cloud: 'rgba(255,255,255,.9)',
-      hills: ['rgba(240, 150, 170, .5)', 'rgba(220, 120, 150, .4)'],
-      groundWave: '#f0a8c0', foam: 'rgba(255,255,255,.55)',
-      groundTop: '#fff0e6', groundBottom: '#f7d8cf', groundLine: '#ecc4bc', groundStripe: 'rgba(240, 190, 180, .9)'
-    }
-  ];
-
-  function currentBg() { return backgrounds[settings.bg]; }
-
-  function makeClouds() {
-    clouds = [];
-    for (var i = 0; i < 6; i++) {
-      clouds.push({
-        x: Math.random() * W,
-        y: 40 + Math.random() * 300,
-        s: 0.55 + Math.random() * 0.7,
-        v: 6 + Math.random() * 10
+  // 滚动出现动画（IntersectionObserver）
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('show');
+          io.unobserve(en.target);
+        }
       });
-    }
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('show'); });
   }
 
-  function reset() {
-    bird = { y: FLOOR * 0.42, v: 0, angle: 0, wing: 0 };
-    pipes = [];
-    score = 0;
-    speed = BASE_SPEED;
-    groundX = 0;
-    tick = 0;
-    flash = 0;
-    makeClouds();
-    // 预置三根管道
-    pipes.push(makePipe(W + 60));
-    pipes.push(makePipe(W + 60 + settings.spacing));
-    pipes.push(makePipe(W + 60 + settings.spacing * 2));
-  }
-
-  function gapSize() { return Math.max(110, settings.gap - score * 1.4); }
-
-  function makePipe(x) {
-    var gap = gapSize();
-    var minY = 62;
-    var maxY = FLOOR - gap - 70;
-    var y = minY + Math.random() * Math.max(10, maxY - minY);
-    return { x: x, gapY: y, gap: gap, scored: false, hue: Math.random() };
-  }
-
-  // ---------- 音效（WebAudio 合成，无外部文件） ----------
-  var actx = null;
-  function beep(freq, dur, type, vol) {
-    if (!soundOn) return;
-    try {
-      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state === 'suspended') actx.resume();
-      var o = actx.createOscillator(), g = actx.createGain();
-      o.type = type || 'sine';
-      o.frequency.setValueAtTime(freq, actx.currentTime);
-      g.gain.setValueAtTime(vol || 0.08, actx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
-      o.connect(g); g.connect(actx.destination);
-      o.start(); o.stop(actx.currentTime + dur);
-    } catch (e) { /* 忽略音频错误 */ }
-  }
-  function sfxFlap() { beep(660, 0.09, 'triangle', 0.06); }
-  function sfxScore() { beep(880, 0.10, 'sine', 0.09); setTimeout(function () { beep(1180, 0.12, 'sine', 0.07); }, 70); }
-  function sfxHit() { beep(180, 0.22, 'sawtooth', 0.09); setTimeout(function () { beep(110, 0.30, 'square', 0.07); }, 110); }
-
-  // ---------- 输入 ----------
-  function flap() {
-    if (state === 'ready') { state = 'play'; bird.v = JUMP_VEL; sfxFlap(); return; }
-    if (state === 'play') { bird.v = JUMP_VEL; sfxFlap(); return; }
-    if (state === 'over') { /* 结束后短暂锁定，避免误触立即重开 */ }
-  }
-  function restart() {
-    reset();
-    state = 'play';
-    bird.v = JUMP_VEL;
-    btnStart.textContent = '重新开始';
-    sfxFlap();
-  }
-
-  canvas.addEventListener('mousedown', function (e) { e.preventDefault(); flap(); });
-  canvas.addEventListener('touchstart', function (e) { e.preventDefault(); flap(); }, { passive: false });
-  btnStart.addEventListener('click', function () {
-    if (state === 'play') { return; }
-    if (state === 'over') { restart(); } else { state = 'play'; bird.v = JUMP_VEL; btnStart.textContent = '重新开始'; sfxFlap(); }
+  // 导航高亮当前区块
+  var links = document.querySelectorAll('.nav-links a');
+  var secs = [];
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) secs.push({ a: a, el: el });
   });
-  btnSound.addEventListener('click', function () {
-    soundOn = !soundOn;
-    btnSound.textContent = '音效：' + (soundOn ? '开' : '关');
-  });
-
-  // ---------- 设置面板 ----------
-  var spacingRange = document.getElementById('spacingRange');
-  var gapRange = document.getElementById('gapRange');
-  var spacingVal = document.getElementById('spacingVal');
-  var gapVal = document.getElementById('gapVal');
-  var bgOptions = document.getElementById('bgOptions');
-
-  // 按当前左右距离重新铺一批管道（保证间距修改立即生效）
-  function rebuildPipes() {
-    pipes = [];
-    for (var i = 0; i < 3; i++) {
-      pipes.push(makePipe(W + 60 + i * settings.spacing));
+  function onScroll() {
+    var pos = window.scrollY + 120, cur = null;
+    secs.forEach(function (s) { if (s.el.offsetTop <= pos) cur = s; });
+    links.forEach(function (a) { a.style.background = ''; a.style.color = ''; });
+    if (cur) { cur.a.style.background = '#eaf8ff'; cur.a.style.color = '#1f6f9c'; }
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(function () { onScroll(); ticking = false; });
     }
-  }
-
-  // 若上次保存的背景索引越界则回退到默认
-  if (settings.bg < 0 || settings.bg >= backgrounds.length) settings.bg = 0;
-
-  // 把已记忆的设置同步到控件显示
-  spacingRange.value = settings.spacing;
-  spacingVal.textContent = settings.spacing;
-  gapRange.value = settings.gap;
-  gapVal.textContent = settings.gap;
-
-  spacingRange.addEventListener('input', function () {
-    settings.spacing = parseInt(spacingRange.value, 10);
-    spacingVal.textContent = settings.spacing;
-    rebuildPipes();
-    saveSettings();
-  });
-
-  gapRange.addEventListener('input', function () {
-    settings.gap = parseInt(gapRange.value, 10);
-    gapVal.textContent = settings.gap;
-    // 空隙对新生成的管道立即生效，已在场上的管道保持不变，避免把小鸟困住
-    saveSettings();
-  });
-
-  // 生成背景选择按钮（玩家只负责选择，配色在代码内置）
-  (function buildBgChips() {
-    for (var i = 0; i < backgrounds.length; i++) {
-      (function (idx) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'bg-chip' + (idx === settings.bg ? ' active' : '');
-        b.textContent = backgrounds[idx].name;
-        b.addEventListener('click', function () {
-          settings.bg = idx;
-          for (var j = 0; j < bgOptions.children.length; j++) {
-            bgOptions.children[j].className = 'bg-chip';
-          }
-          b.className = 'bg-chip active';
-          saveSettings();
-        });
-        bgOptions.appendChild(b);
-      })(i);
-    }
-  })();
-  window.addEventListener('keydown', function (e) {
-    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); flap(); }
-    if (e.code === 'KeyR') { restart(); }
-    if (e.code === 'Enter' && state === 'over') { restart(); }
-  });
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) { lastTs = 0; }
-  });
-
-  // ---------- 更新 ----------
-  function update(dt) {
-    tick += dt;
-
-    // 云朵飘动
-    for (var i = 0; i < clouds.length; i++) {
-      var c = clouds[i];
-      c.x -= c.v * dt * (state === 'play' ? 1 : 0.5);
-      if (c.x < -70) { c.x = W + 40; c.y = 40 + Math.random() * 300; }
-    }
-
-    if (state === 'ready') {
-      bird.y = FLOOR * 0.42 + Math.sin(tick * 3) * 9;
-      bird.angle = Math.sin(tick * 3) * 0.12;
-      bird.wing = tick * 8;
-      groundX = (groundX + BASE_SPEED * 0.6 * dt) % 28;
-      return;
-    }
-
-    if (state === 'over') {
-      // 死亡后继续下落到地面
-      if (bird.y < FLOOR - BIRD_R) {
-        bird.v += GRAVITY * dt;
-        bird.y += bird.v * dt;
-        bird.angle = Math.min(bird.angle + 4 * dt, 1.5);
-      } else {
-        bird.y = FLOOR - BIRD_R;
-        bird.v = 0;
-      }
-      flash = Math.max(0, flash - dt * 3);
-      return;
-    }
-
-    // 小鸟物理
-    bird.v += GRAVITY * dt;
-    bird.y += bird.v * dt;
-    bird.wing += dt * (bird.v < 0 ? 22 : 9);
-    var target = Math.max(-0.5, Math.min(1.1, bird.v / 700));
-    bird.angle += (target - bird.angle) * Math.min(1, dt * 12);
-
-    if (bird.y < BIRD_R) { bird.y = BIRD_R; bird.v = 0; }
-
-    // 难度递增
-    speed = Math.min(300, BASE_SPEED + Math.floor(score / 5) * 8);
-    groundX = (groundX + speed * dt) % 28;
-
-    // 管道移动
-    for (var j = pipes.length - 1; j >= 0; j--) {
-      pipes[j].x -= speed * dt;
-      if (pipes[j].x + PIPE_W < -10) pipes.splice(j, 1);
-    }
-    var lastPipe = pipes[pipes.length - 1];
-    if (!lastPipe || lastPipe.x < W - settings.spacing) {
-      pipes.push(makePipe(W + 20));
-    }
-
-    // 计分
-    for (var k = 0; k < pipes.length; k++) {
-      var p = pipes[k];
-      if (!p.scored && p.x + PIPE_W < BIRD_X - BIRD_R) {
-        p.scored = true;
-        score++;
-        sfxScore();
-        if (score > best) { best = score; localStorage.setItem('flappy-best', String(best)); }
-      }
-    }
-
-    // 碰撞：地面 / 管道
-    if (bird.y + BIRD_R >= FLOOR) {
-      bird.y = FLOOR - BIRD_R;
-      gameOver();
-      return;
-    }
-    for (var m = 0; m < pipes.length; m++) {
-      if (hitPipe(pipes[m])) { gameOver(); return; }
-    }
-  }
-
-  function hitPipe(p) {
-    var bx = BIRD_X, by = bird.y, r = BIRD_R - 1;
-    var nx = Math.max(p.x, Math.min(bx, p.x + PIPE_W));
-    var inX = Math.abs(bx - nx) < r + 1;
-    if (!inX) return false;
-    var topBottom = p.gapY;          // 上管道下沿
-    var botTop = p.gapY + p.gap;     // 下管道上沿
-    return (by - r < topBottom) || (by + r > botTop);
-  }
-
-  function gameOver() {
-    state = 'over';
-    flash = 1;
-    bird.v = Math.min(bird.v, 0);
-    sfxHit();
-    if (score >= best && score > 0) { /* 最高分已在计分时保存 */ }
-    if (navigator.vibrate) { try { navigator.vibrate(60); } catch (e) {} }
-  }
-
-  // ---------- 绘制 ----------
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.closePath();
-  }
-
-  function drawSky() {
-    var bg = currentBg();
-    var g = ctx.createLinearGradient(0, 0, 0, FLOOR);
-    g.addColorStop(0, bg.sky[0]);
-    g.addColorStop(0.42, bg.sky[1]);
-    g.addColorStop(1, bg.sky[2]);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
-
-    // 星星（星夜背景，随 tick 闪烁）
-    if (bg.stars) {
-      for (var i = 0; i < 46; i++) {
-        var sx = ((i * 61.7) % W + W) % W;
-        var sy = ((i * 37.3) % (FLOOR * 0.5)) + 10;
-        var tw = 0.5 + 0.5 * Math.sin(tick * 2 + i * 1.7);
-        ctx.fillStyle = 'rgba(255,255,235,' + (0.25 + 0.55 * tw).toFixed(3) + ')';
-        var sr = i % 3 === 0 ? 1.8 : 1.1;
-        ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
-      }
-    }
-
-    // 太阳 / 月亮
-    var c = bg.celestial;
-    var sg = ctx.createRadialGradient(c.x, c.y, 6, c.x, c.y, c.glowR);
-    sg.addColorStop(0, c.glow1);
-    sg.addColorStop(0.45, c.glow2);
-    sg.addColorStop(1, c.glow3);
-    ctx.fillStyle = sg;
-    ctx.beginPath(); ctx.arc(c.x, c.y, c.glowR, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = c.core;
-    ctx.beginPath(); ctx.arc(c.x, c.y, c.coreR, 0, Math.PI * 2); ctx.fill();
-
-    if (c.type === 'moon') {
-      // 月亮环形山
-      ctx.fillStyle = 'rgba(200,220,250,.28)';
-      ctx.beginPath(); ctx.arc(c.x - 8, c.y + 2, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(c.x + 7, c.y - 6, 3.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(c.x + 2, c.y + 9, 4, 0, Math.PI * 2); ctx.fill();
-    }
-  }
-
-  function drawCloud(c) {
-    var s = c.s;
-    ctx.save();
-    ctx.translate(c.x, c.y);
-    ctx.scale(s, s);
-    ctx.fillStyle = currentBg().cloud;
-    ctx.beginPath();
-    ctx.arc(0, 0, 18, 0, Math.PI * 2);
-    ctx.arc(20, 6, 14, 0, Math.PI * 2);
-    ctx.arc(-20, 6, 13, 0, Math.PI * 2);
-    ctx.arc(6, -12, 14, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawHills() {
-    var bg = currentBg();
-    // 远处的海岛，随背景配色
-    ctx.fillStyle = bg.hills[0];
-    ctx.beginPath();
-    ctx.moveTo(-20, FLOOR);
-    ctx.lineTo(40, FLOOR - 78);
-    ctx.lineTo(110, FLOOR - 20);
-    ctx.lineTo(180, FLOOR - 92);
-    ctx.lineTo(260, FLOOR - 30);
-    ctx.lineTo(320, FLOOR - 66);
-    ctx.lineTo(390, FLOOR);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = bg.hills[1];
-    ctx.beginPath();
-    ctx.moveTo(-20, FLOOR);
-    ctx.lineTo(70, FLOOR - 46);
-    ctx.lineTo(150, FLOOR - 12);
-    ctx.lineTo(230, FLOOR - 54);
-    ctx.lineTo(320, FLOOR - 16);
-    ctx.lineTo(390, FLOOR);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  function drawPipes() {
-    for (var i = 0; i < pipes.length; i++) {
-      var p = pipes[i];
-      var capH = 26, capW = PIPE_W + 12;
-
-      // 上管道
-      pipeBody(p.x - 6, -10, capW, p.gapY + 10 - capH);
-      pipeCap(p.x - 6, p.gapY - capH, capW, capH);
-      // 下管道
-      var botTop = p.gapY + p.gap;
-      pipeCap(p.x - 6, botTop, capW, capH);
-      pipeBody(p.x - 6, botTop + capH, capW, FLOOR - botTop - capH + 10);
-    }
-  }
-
-  function pipeBody(x, y, w, h) {
-    if (h <= 0) return;
-    var g = ctx.createLinearGradient(x, 0, x + w, 0);
-    g.addColorStop(0, '#1f7fb8');
-    g.addColorStop(0.22, '#5cc4ee');
-    g.addColorStop(0.55, '#3aa6dc');
-    g.addColorStop(1, '#166a9c');
-    ctx.fillStyle = g;
-    ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = '#0f5c8a';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x + 1, y, w - 2, h);
-  }
-
-  function pipeCap(x, y, w, h) {
-    var g = ctx.createLinearGradient(x, 0, x + w, 0);
-    g.addColorStop(0, '#2190c9');
-    g.addColorStop(0.22, '#7ad6f7');
-    g.addColorStop(0.6, '#43b0e4');
-    g.addColorStop(1, '#17729f');
-    ctx.fillStyle = g;
-    roundRect(x, y, w, h, 8);
-    ctx.fill();
-    ctx.strokeStyle = '#0f5c8a';
-    ctx.lineWidth = 2;
-    roundRect(x + 1, y + 1, w - 2, h - 2, 7);
-    ctx.stroke();
-    // 奶油色高光
-    ctx.fillStyle = 'rgba(255,253,240,.55)';
-    ctx.fillRect(x + 7, y + 6, 5, h - 12);
-  }
-
-  function drawGround() {
-    var bg = currentBg();
-    // 海浪条
-    ctx.fillStyle = bg.groundWave;
-    ctx.fillRect(0, FLOOR - 8, W, 10);
-    ctx.fillStyle = bg.foam;
-    for (var i = -1; i < W / 28 + 2; i++) {
-      var x = i * 28 - groundX;
-      ctx.beginPath();
-      ctx.arc(x + 14, FLOOR - 4, 7, Math.PI, 0);
-      ctx.fill();
-    }
-    // 地面
-    var g = ctx.createLinearGradient(0, FLOOR, 0, H);
-    g.addColorStop(0, bg.groundTop);
-    g.addColorStop(1, bg.groundBottom);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, FLOOR, W, GROUND_H);
-    ctx.strokeStyle = bg.groundLine;
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, FLOOR + 1); ctx.lineTo(W, FLOOR + 1); ctx.stroke();
-    // 斜纹
-    ctx.strokeStyle = bg.groundStripe;
-    ctx.lineWidth = 7;
-    for (var j = -2; j < W / 28 + 3; j++) {
-      var bx = j * 28 - groundX;
-      ctx.beginPath();
-      ctx.moveTo(bx, FLOOR + 16);
-      ctx.lineTo(bx + 16, H);
-      ctx.stroke();
-    }
-  }
-
-  function drawBird() {
-    ctx.save();
-    ctx.translate(BIRD_X, bird.y);
-    ctx.rotate(bird.angle);
-
-    // 尾巴
-    ctx.fillStyle = '#ffe0ab';
-    ctx.beginPath();
-    ctx.moveTo(-11, -3);
-    ctx.lineTo(-23, -8);
-    ctx.lineTo(-20, 4);
-    ctx.closePath();
-    ctx.fill();
-
-    // 身体
-    var bg = ctx.createLinearGradient(0, -14, 0, 14);
-    bg.addColorStop(0, '#ffffff');
-    bg.addColorStop(1, '#ffefc4');
-    ctx.fillStyle = bg;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 16, 13.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#f2c98a';
-    ctx.lineWidth = 1.6;
-    ctx.stroke();
-
-    // 肚皮
-    ctx.fillStyle = '#fff6dd';
-    ctx.beginPath();
-    ctx.ellipse(1, 4.5, 10.5, 7, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 翅膀（拍动）
-    var flapPhase = Math.sin(bird.wing);
-    ctx.save();
-    ctx.translate(-2, 2);
-    ctx.rotate(flapPhase * 0.45);
-    var wg = ctx.createLinearGradient(0, -6, 0, 8);
-    wg.addColorStop(0, '#a8e6ff');
-    wg.addColorStop(1, '#3fb2e6');
-    ctx.fillStyle = wg;
-    ctx.beginPath();
-    ctx.ellipse(-1, 1, 10, 6.2, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#2f96c9';
-    ctx.lineWidth = 1.4;
-    ctx.stroke();
-    ctx.restore();
-
-    // 眼睛
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath(); ctx.arc(7.5, -4, 4.8, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#e7bd85'; ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.fillStyle = '#2c4a63';
-    ctx.beginPath(); ctx.arc(9, -4, 2.3, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath(); ctx.arc(10, -5, 0.9, 0, Math.PI * 2); ctx.fill();
-
-    // 嘴巴
-    ctx.fillStyle = '#ff9e63';
-    ctx.beginPath();
-    ctx.moveTo(13, -1);
-    ctx.lineTo(25, 2);
-    ctx.lineTo(13, 5.5);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = '#f2803c';
-    ctx.beginPath();
-    ctx.moveTo(13, 3);
-    ctx.lineTo(22, 3.4);
-    ctx.lineTo(13, 7);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function drawScore() {
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.font = '700 46px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.lineWidth = 7;
-    ctx.strokeStyle = 'rgba(47, 159, 216, .9)';
-    ctx.fillStyle = '#fffdf3';
-    ctx.strokeText(String(score), W / 2, 82);
-    ctx.fillText(String(score), W / 2, 82);
-
-    ctx.font = '600 15px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = 'rgba(47, 159, 216, .75)';
-    ctx.fillStyle = '#fffdf3';
-    ctx.strokeText('最高 ' + best, W / 2, 108);
-    ctx.fillText('最高 ' + best, W / 2, 108);
-    ctx.restore();
-  }
-
-  function panel(x, y, w, h) {
-    ctx.save();
-    ctx.shadowColor = 'rgba(20, 80, 120, .25)';
-    ctx.shadowBlur = 22;
-    ctx.shadowOffsetY = 8;
-    var g = ctx.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, '#ffffff');
-    g.addColorStop(1, '#f4fbff');
-    ctx.fillStyle = g;
-    roundRect(x, y, w, h, 20);
-    ctx.fill();
-    ctx.restore();
-    ctx.strokeStyle = '#cdeaf8';
-    ctx.lineWidth = 2;
-    roundRect(x + 1, y + 1, w - 2, h - 2, 19);
-    ctx.stroke();
-  }
-
-  function drawReady() {
-    panel(W / 2 - 130, 150, 260, 190);
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#1f6f9c';
-    ctx.font = '700 26px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText('谢同学', W / 2, 205);
-
-    ctx.fillStyle = '#6f9dbb';
-    ctx.font = '15px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText('点击屏幕 / 空格 让小鸟起飞', W / 2, 245);
-    ctx.fillText('穿过管道的空隙得分', W / 2, 272);
-
-    // 提示手指动画
-    var bob = Math.sin(tick * 4) * 5;
-    ctx.fillStyle = '#7fd8ff';
-    ctx.beginPath();
-    ctx.arc(W / 2, 310 + bob, 12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(W / 2, 310 + bob, 8, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawOver() {
-    panel(W / 2 - 130, 180, 260, 226);
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#1f6f9c';
-    ctx.font = '700 26px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText('游戏结束', W / 2, 232);
-
-    ctx.fillStyle = '#8fb4c9';
-    ctx.font = '14px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText('本局得分', W / 2, 268);
-    ctx.fillStyle = '#2f9fd8';
-    ctx.font = '700 44px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText(String(score), W / 2, 312);
-
-    ctx.fillStyle = '#6f9dbb';
-    ctx.font = '14px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText('最高分 ' + best + (score >= best && score > 0 ? '  ·  新纪录！' : ''), W / 2, 342);
-
-    // 重开按钮
-    var bw = 150, bh = 40, bx = W / 2 - bw / 2, by = 362;
-    var g = ctx.createLinearGradient(0, by, 0, by + bh);
-    g.addColorStop(0, '#6fd0f5');
-    g.addColorStop(1, '#2f9fd8');
-    ctx.fillStyle = g;
-    roundRect(bx, by, bw, bh, 20);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '600 16px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-    ctx.fillText('再来一局', W / 2, by + 26);
-    ctx.restore();
-  }
-
-  function draw() {
-    drawSky();
-    for (var i = 0; i < clouds.length; i++) drawCloud(clouds[i]);
-    drawHills();
-    if (state !== 'ready') drawPipes();
-    drawGround();
-
-    if (state === 'ready') {
-      drawBird();
-      drawScore();
-      drawReady();
-    } else {
-      drawBird();
-      drawScore();
-      if (state === 'over') drawOver();
-    }
-
-    if (flash > 0) {
-      ctx.fillStyle = 'rgba(255,255,255,' + (flash * 0.55) + ')';
-      ctx.fillRect(0, 0, W, H);
-    }
-  }
-
-  // 结束界面点击 / 触摸：命中按钮区域则重开，否则忽略
-  function hitRestartButton(clientX, clientY) {
-    var rect = canvas.getBoundingClientRect();
-    var x = (clientX - rect.left) / rect.width * W;
-    var y = (clientY - rect.top) / rect.height * H;
-    var bw = 150, bh = 40, bx = W / 2 - bw / 2, by = 362;
-    return x >= bx && x <= bx + bw && y >= by && y <= by + bh;
-  }
-  canvas.addEventListener('click', function (e) {
-    if (state === 'over' && hitRestartButton(e.clientX, e.clientY)) { restart(); }
-  });
-  canvas.addEventListener('touchend', function (e) {
-    if (state === 'over' && e.changedTouches && e.changedTouches[0]) {
-      var t = e.changedTouches[0];
-      if (hitRestartButton(t.clientX, t.clientY)) { restart(); }
-    }
-  });
-
-  // ---------- 主循环 ----------
-  function loop(ts) {
-    raf = requestAnimationFrame(loop);
-    if (!lastTs) lastTs = ts;
-    var dt = (ts - lastTs) / 1000;
-    lastTs = ts;
-    dt = Math.min(dt, 1 / 30);
-    update(dt);
-    draw();
-  }
-
-  reset();
-  draw();
-  raf = requestAnimationFrame(loop);
+  }, { passive: true });
+  onScroll();
 })();
 </script>
 </body>
